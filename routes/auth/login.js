@@ -15,19 +15,21 @@ router.post('/', (req, res) => {
   
   // check if email and password exist
 
-  const userWithEmail = userData.some(user => user.email === req.params.email)
+  const { email, password} = req.body;
+  console.log({email, userData})
 
-  // if (!userWithEmail) {
-  //   res.json({ message: 'Email or Password Doesnot Match'})
-  // }
+  const userWithEmail = userData.some(user => user.email === email)
+  const userWithPassword = userData.some(user => user.password === password)
 
-  // if (userWithEmail.password !== password) {
-  //   res.json({ message: 'Email or Password Doesnot Match'})
-  // }
+  if (!userWithEmail || !userWithPassword) {
+    res.json({ message: 'Email or Password Doesnot Match', success: false })
+  }
 
-  jwt.sign({userWithEmail}, 'secretkey', (err, token) => {
+  jwt.sign({userWithEmail, userWithPassword}, 'secretkey', (err, token) => {
     res.send({
-      token
+      token,
+      success: true,
+      message: `USER IS LOGGED IN`
     })
   })
 });

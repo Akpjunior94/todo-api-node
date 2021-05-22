@@ -18,7 +18,9 @@ app.use('/api/activities', activityRoute);
 
 //ROUTES
 app.get('/', (req, res) => {
-  res.send('Wecome to the Api');
+  res.send(`
+  <h1>Welcome to the TODO RESTFUL Api</h1>
+  `);
 })
 
 

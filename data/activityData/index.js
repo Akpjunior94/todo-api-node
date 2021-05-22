@@ -2,22 +2,34 @@ const activityList = [
   {
     id: 1,
     activity: 'Write codes',
-    isCompleted: true
+    week: 'week one',
+    day: 'Monday',
+    month: 'january',
+    isCompleted: false
   },
   {
     id: 2,
     activity: 'Reading the Scriptures',
-    isCompleted : false
+    week: 'week two',
+    day: 'Tusday',
+    month: 'february',
+    isCompleted: true
   },
   {
     id: 3,
     activity: 'Hang out with friends',
-    isCompleted: true
+    week: 'week three',
+    day: 'wednesday',
+    month: 'march',
+    isCompleted: false
   },
   {
     id: 4,
     activity: 'Go to church',
-    isCompleted: false
+    week: 'week four',
+    day: 'Thursday',
+    month: 'april',
+    isCompleted: true
   }
   
 ]

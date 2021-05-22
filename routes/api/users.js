@@ -33,14 +33,19 @@ router.post('/', /*verifyToken,*/ (req, res) => {
   const newUser = {
     id: uuid.v4(),
     name: req.body.name,
-    email : req.body.email
+    email : req.body.email,
+    password: req.body.password
   }
 
-  if (!newUser.name || !newUser.email) {
+  //check if a similar email exist
+  const emailCheck = userData.some(user => user.email === newUser.email)
+  // console.log(emailCheck)
+
+  if (emailCheck) {
     res.sendStatus(400);
   } else {
     userData.push(newUser)
-    res.json({msg:`The User: ${newUser.name} has been added`,
+    res.json({msg:`The User: ${newUser.name} has been added to the Database`,
     userData})
   }
 

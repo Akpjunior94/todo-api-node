@@ -42,7 +42,7 @@ router.post('/', /*verifyToken,*/ (req, res) => {
   // console.log(emailCheck)
 
   if (emailCheck) {
-    res.sendStatus(400);
+    res.status(400).send({ message: `user with the ${newUser.email} already exist` })
   } else {
     userData.push(newUser)
     res.json({msg:`The User: ${newUser.name} has been added to the Database`,

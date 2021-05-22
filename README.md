@@ -25,7 +25,7 @@ Postman can be use for Api testing
 
 * To create new users send a `post request` to the route `http://localhost:3500/api/users` 
 * To `login` send a `post request` to the route `http://localhost:3500/api/login` 
-* To create `activity list` send a `post request` to the route `http://localhost:3500/api/login`
+* To create `activity list` send a `post request` to the route `http://localhost:3500/api/activities` 
 * To view `activity list` for `day` send a `get request` to the route `http://localhost:3500/api/activities`
 * To view `activity list` for `week` and `month` send a `get request` to `http://localhost:3500/api/activities` passing the `:/{jan}` and `:/{mon}` to the route
 * To mark an `activity` as `completed` send a `put request` to the route `http://localhost:3500/api/activities` passing in the `/:id`

@@ -23,7 +23,7 @@ todo-api-node is a RESTFUL Api which returns a `JSON` data that can be used for 
 
 Postman can be use for Api testing 
 
-* To create new users send a `post request` to the route `http://localhost:3500/api/users` 
+* To `create` new `user` send a `post request` to the route `http://localhost:3500/api/users` 
 * To `login` send a `post request` to the route `http://localhost:3500/api/login` 
 * To create `activity list` send a `post request` to the route `http://localhost:3500/api/activities` 
 * To view `activity list` for `day` send a `get request` to the route `http://localhost:3500/api/activities`

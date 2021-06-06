@@ -1,25 +1,21 @@
 const express = require('express');
-
 const jwt = require('jsonwebtoken');
-
 const router = express.Router();
-
-const uuid = require('uuid');
-
-let activitiesData = require('../../data/activityData');
-
-let verifyToken = require('../auth/verifyToken')
+// const uuid = require('uuid');
+const activitiesData = require('../../models/ActivityList');
+// let verifyToken = require('../auth/verifyToken')
 
 //Get All Activities
 router.get('/', (req, res) => {
+
   res.send(activitiesData);
+
 });
 
 // CREATING NEW ACTIVITY
 router.post('/', (req, res) => {
 
   const newActivity = {
-    id: uuid.v4(),
     activity: req.body.activity,
     week: req.body.week,
     day: req.body.day,
@@ -70,16 +66,5 @@ router.put('/:id', (req, res) => {
     res.json('data not found');
   }
 });
-
-
-
-
-
-
-
-
-
-
-
 
 module.exports = router;

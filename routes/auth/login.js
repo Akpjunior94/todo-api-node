@@ -1,12 +1,9 @@
 const express = require('express');
-
 const jwt = require('jsonwebtoken');
-
 const router = express.Router();
-
 const uuid = require('uuid');
 
-let userData = require('../../data/userData');
+const User = require('../../models/User');
 
 // login
 router.post('/', (req, res) => {
@@ -14,12 +11,11 @@ router.post('/', (req, res) => {
   // check if user is already in the database
   
   // check if email and password exist
-
   const { email, password} = req.body;
-  console.log({email, userData})
+  // console.log({email, User})
 
-  const userWithEmail = userData.some(user => user.email === email)
-  const userWithPassword = userData.some(user => user.password === password)
+  const userWithEmail = User.some(user => user.email === email)
+  const userWithPassword = User.some(user => user.password === password)
 
   if (!userWithEmail || !userWithPassword) {
     res.json({ message: 'Email or Password Doesnot Match', success: false })

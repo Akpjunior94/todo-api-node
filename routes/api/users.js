@@ -1,104 +1,95 @@
 const express = require('express');
-
 const jwt = require('jsonwebtoken');
-
 const router = express.Router();
+const User = require('../../models/User');
 
-const uuid = require('uuid');
+// creating a middleware for the :ID route to avoid repiting codes
+async function getUser(req, res, next) {
+  let user
+  try {
+    user =await User.findById(req.params.id)
+    if (user == null) {
+      return res.status(404).json({ message: 'cannot find user' })
+    }
+  } catch (err) {
+    return res.status(500).json({message: err.message})
+  }
 
-let userData = require('../../data/userData');
-
-let verifyToken = require('../auth/verifyToken')
-
+  res.user = user
+  next()
+}
 
 //Get All Users
-router.get('/', (req, res) => {
-  res.send(userData);
+router.get('/', async (req, res) => { 
+  try {
+    const users = await User.find()
+    res.json(users)
+  } catch (err) {
+    res.status(500).json({message: err.message})
+  }
 });
 
-//Get Users by Id
-router.get('/:id', (req, res) => {
-  const singleUser = userData.some(user => user.id === parseInt(req.params.id))
-
-  if (singleUser) {
-    res.send(userData.filter(user => user.id === parseInt(req.params.id)))
-  } else {
-    res.sendStatus(400);
-  }
+//Get Users by Id -- Getting One
+router.get('/:id', getUser, (req, res) => {
+  res.json(res.user)
 });
 
 //CREATING NEW USERS
-router.post('/', /*verifyToken,*/ (req, res) => {
+router.post('/', async (req, res) => {
   // create new User by giving a unique id
-  const newUser = {
-    id: uuid.v4(),
+  const user = new User ( {
+    // id: uuid.v4(),
     name: req.body.name,
     email : req.body.email,
     password: req.body.password
+  })
+
+  try {
+    const newUser = await user.save()
+    res.status(201).json(newUser)
+  } catch (err) {
+    res.status(400).json({message: err.message})
   }
 
   //check if a similar email exist
-  const emailCheck = userData.some(user => user.email === newUser.email)
-  // console.log(emailCheck)
-
-  if (emailCheck) {
-    res.status(400).send({ message: `user with the ${newUser.email} already exist` })
-  } else {
-    userData.push(newUser)
-    res.json({msg:`The User: ${newUser.name} has been added to the Database`,
-    userData})
-  }
+  // const emailCheck = User.some(element => element.email === user.email)
 
 
-
-  // jwt.verify(req.token, 'secretkey', (err, authData) => {
-  //   if (err) {
-  //     res.sendStatus(403)
-  //   }else {
-  //     res.json({
-  //       message: "User Created...",
-  //       authData
-  //     })
-  //   }
-  // })
+  // if (emailCheck) {
+  //   res.status(400).send({ message: `user with the ${user.email} already exist` })
+  // } else {
+  //   user.save()
+  //   res.json({msg:`The User: ${user.name} has been added to the Database`,
+  //   userData})
+  // }
 
   
 });
 
 //UPDATING USER
-router.put('/:id', (req, res) => {
-  const singleUser = userData.some(user => user.id === parseInt(req.params.id))
-
-  if (singleUser) {
-    const updateUser = req.body
-    userData.forEach(user => {
-      if (user.id === parseInt(req.params.id)) {
-        user.name = updateUser.name ? updateUser.name : user.name
-        user.email = updateUser.email ? updateUser.email : user.email
-        res.send({msg: 'User updated', user});
-      }
-    })
-  } else {
-    res.json('Data Not FOund in the DB KINDLY SIGN-UP/REGISTER');
-  }
+router.put('/:id',getUser, async (req, res) => {
+ if (req.body.name != null) {
+   res.user.name = req.body.name
+ }
+ if (req.body.email != null) {
+   res.user.email = req.body.email
+ }
+ try {
+   const updatedUser = await res.user.save()
+   res.json(updatedUser)
+ } catch (err) {
+   res.status(400).json({message: err.message})
+ }
 });
 
 //DELETING USER
-router.delete('/:id', (req, res) => {
-  const singleUser = userData.some(user => user.id === parseInt(req.params.id))
-
-  if (singleUser) {
-    userData = userData.filter(user => user.id === parseInt(req.params.id))
-    res.send({
-      msg:'USER DELETED',
-      userData
-    })
-  } else {
-    res.sendStatus(400);
-  }
+router.delete('/:id', getUser, async (req, res) => {
+ try {
+   await res.user.remove()
+   res.json({message: 'Deleted Subscriber'})
+ } catch (err) {
+   res.status(500).json({ message: err.message })
+ }
 });
-
-
-
 
 module.exports = router;

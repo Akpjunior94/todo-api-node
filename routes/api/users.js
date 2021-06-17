@@ -36,33 +36,29 @@ router.get('/:id', getUser, (req, res) => {
 
 //CREATING NEW USERS
 router.post('/', async (req, res) => {
-  // create new User by giving a unique id
-  const user = new User ( {
-    // id: uuid.v4(),
-    name: req.body.name,
-    email : req.body.email,
-    password: req.body.password
-  })
+  // check if user already exist
+  
+  const {email} = req.body
 
   try {
+    const userExist = await User.findOne({email: email})
+
+    if (userExist) {
+      return res.status(422).json({error: "User with this Email Already Exist"})
+    }
+
+    const user = new User ( {
+      name: req.body.name,
+      email : req.body.email,
+      password: req.body.password
+    })
+
     const newUser = await user.save()
     res.status(201).json(newUser)
+    
   } catch (err) {
     res.status(400).json({message: err.message})
   }
-
-  //check if a similar email exist
-  // const emailCheck = User.some(element => element.email === user.email)
-
-
-  // if (emailCheck) {
-  //   res.status(400).send({ message: `user with the ${user.email} already exist` })
-  // } else {
-  //   user.save()
-  //   res.json({msg:`The User: ${user.name} has been added to the Database`,
-  //   userData})
-  // }
-
   
 });
 

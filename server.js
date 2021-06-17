@@ -18,11 +18,6 @@ db.on('err', err => console.log(err))
 db.once('open', () => console.log('Connected to Database'))
 
 
-
-
-
-
-
 //route being used as a middleware
 app.use('/api/users', usersRoute);
 app.use('/api/login', loginRoute);

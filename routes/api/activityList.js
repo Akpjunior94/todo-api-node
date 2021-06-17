@@ -1,14 +1,11 @@
 const express = require('express');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
-// const uuid = require('uuid');
 const ActivityList = require('../../models/ActivityList');
-// let verifyToken = require('../auth/verifyToken')
 
 //Get All Activities
 router.get('/', async (req, res) => {
   try {
-    const activityLists = await ActivityList.find()
+    const activityLists = await ActivityList.find({})
     res.json(activityLists)
   } catch (err) {
     res.status(500).json({message: err.message})
@@ -36,35 +33,74 @@ router.post('/', async (req, res) => {
 })
 
 // view activities, day, week and month
-router.get('/:id', (req, res)=> {
-  const data = req.params.id
-  if(!data) return res.send('');
+router.get('/week', async(req, res)=> {
+  
+  const {week, day, month} = req.body
+  try {
+    const activityLists = await ActivityList.find({"week": week})
+    if (activityLists) {
+      res.json(activityLists)
+    } else {
+      res.status(404).json({ message: `No Activity for ${week}` })
+    }
+  } catch (err) {
+    res.status(500).json({message: err.message})
+  }
+})
 
-  const dayTodolist = ActivityList.filter(activityList => activityList.day === data)
-  const weekTodolist = ActivityList.filter(activityList => activityList.week === data)
-  const monthTodolist = ActivityList.filter(activityList => activityList.month === data)
-  if (dayTodolist.length || weekTodolist.length || monthTodolist.length) {
-    res.status(200).send({ success: true, data: { day:[...dayTodolist], week: [...weekTodolist], month: [...monthTodolist] }, message: `your ${data} todolist is here` })
-  } else {
-    res.status(400).send({ success: false, message: `no todolist for ${data} here` })
+router.get('/day', async(req, res)=> {
+  
+  const {day} = req.body
+  try {
+    const activityLists = await ActivityList.find({"day": day})
+    if (activityLists) {
+      res.json(activityLists)
+    } else {
+      res.status(404).json({ message: `No Activity for ${day}` })
+    }
+  } catch (err) {
+    res.status(500).json({message: err.message})
+  }
+})
+
+router.get('/month', async(req, res)=> {
+  
+  const {month} = req.body
+  try {
+    const activityLists = await ActivityList.find({"month": month})
+    
+    if (activityLists) {
+      console.log(ActivityList)
+      res.json(activityLists)
+    } else {
+      return res.status(404).json({ message: `No Activity for the month of ${month}` })
+    }
+  } catch (err) {
+    res.status(500).json({message: err.message})
   }
 })
 
 // Ability to mark an activity as completed
-router.put('/:id', (req, res) => {
-  const updateCompleted = activitiesData.some(user => user.id === parseInt(req.params.id))
-
-  if (updateCompleted) {
-    const updateCompleted = req.body
-    activitiesData.forEach(element => {
-      if (element.id === parseInt(req.params.id)) {
-        element.isCompleted = updateCompleted.isCompleted ? updateCompleted.isCompleted : element.isCompleted
-        res.send({msg: 'isCompleted changed', element});
-      }
+router.put('/:id', async (req, res) => {
+  try {
+    const id = req.params.id
+    await ActivityList.findById(id, function (err, activityList) {
+      activityList.isCompleted = !activityList.isCompleted
+      activityList.save(function (err, result) {
+        if (err) {
+          console.log('ERROR!');
+        }
+        if (result) {
+          res.status(200).json({msg: "isCompleted Updated"})
+        }
+      })
     })
-  } else {
-    res.json('data not found');
+    
+  } catch (err) {
+     res.status(500).json({message: err.message})
   }
+
 });
+
 
 module.exports = router;

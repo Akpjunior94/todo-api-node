@@ -35,7 +35,7 @@ router.post('/', async (req, res) => {
 // view activities, day, week and month
 router.get('/week', async(req, res)=> {
   
-  const {week, day, month} = req.body
+  const {week} = req.body
   try {
     const activityLists = await ActivityList.find({"week": week})
     if (activityLists) {
@@ -70,7 +70,7 @@ router.get('/month', async(req, res)=> {
     const activityLists = await ActivityList.find({"month": month})
     
     if (activityLists) {
-      console.log(ActivityList)
+      // console.log(ActivityList)
       res.json(activityLists)
     } else {
       return res.status(404).json({ message: `No Activity for the month of ${month}` })

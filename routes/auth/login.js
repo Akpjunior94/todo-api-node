@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
       } else {
         res.json({
           status: "FAILED",
-          message: "Invalid Credentials ENtered"
+          message: "Invalid Credentials ENtered / USER DOESN'T EXIST"
         })
       }
     })
